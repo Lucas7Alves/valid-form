@@ -1,17 +1,5 @@
 const form = document.getElementById("formulario");
 
-//get
-async function fetchData() {
-  try {
-    const response = await fetch("http://localhost:5000/api/data");
-    const data = await response.json();
-
-    document.getElementById("getData").innerHTML = data.message;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 //post
 async function enviarDados(event) {
   event.preventDefault();
@@ -49,7 +37,7 @@ async function enviarDados(event) {
   }
 
   try {
-    const response = await fetch("http://localhost:5000/api/send", {
+    const response = await fetch("http://localhost:8080/user/cadastro", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
