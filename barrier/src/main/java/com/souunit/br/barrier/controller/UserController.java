@@ -27,6 +27,8 @@ public class UserController {
 	@PostMapping(value = "/cadastro")
 	public ResponseEntity<UserDTO> insert(@Valid @RequestBody User u) {
 		
+		
+		
 		UserDTO dto = service.insert(u);
 		URI uri = ServletUriComponentsBuilder
 				.fromCurrentRequest()
