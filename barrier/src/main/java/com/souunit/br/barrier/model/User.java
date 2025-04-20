@@ -22,7 +22,7 @@ public class User {
 	@Email
 	private String email;
 	
-	@Size(min = 3, max = 20, message = "The name should be 3 at 20 characters")
+	@Size(min = 8, message = "The password should be bigger or equals than 8 characters")
 	private String password;
 	
 	
