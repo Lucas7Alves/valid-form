@@ -17,20 +17,19 @@ public class UserService {
 	private UserRepository repository;
 	
 	public UserDTO insert(User u) {
-		UserDTO dto = copyUserToDTO(u);
 		
 		//TODO: enviar email de confirmação para usuário
 		if (!isDomainValid(u.getEmail())) {
 			throw new RuntimeException("Invalid email!");
 		}
 		
-		repository.save(u);
+		UserDTO dto = copyUserToDTO(repository.save(u));
 		return dto;
 	}
 	
 	private UserDTO copyUserToDTO(User u) {
 		UserDTO dto = new UserDTO();
-		
+		dto.setId(u.getIdUser());
 		dto.setName(u.getName());
 		dto.setEmail(u.getEmail());
 		return dto;
