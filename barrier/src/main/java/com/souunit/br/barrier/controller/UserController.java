@@ -4,6 +4,7 @@ import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.souunit.br.barrier.DTO.UserDTO;
+import com.souunit.br.barrier.config.SecurityConfiguration;
 import com.souunit.br.barrier.model.User;
 import com.souunit.br.barrier.service.UserService;
 
@@ -20,14 +22,25 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {
+	
+
+	//TODO: sistema de login
+	//TODO: enviar email de confirmação para usuário
+	//TODO: criptografar a senha
+	//TODO: tratamento de exceções personalizado e tratado pelo spring
 
 	@Autowired
 	private UserService service;
 	
+	@Autowired
+	private BCryptPasswordEncoder encoder; 
+	
+	
 	@PostMapping(value = "/cadastro")
 	public ResponseEntity<UserDTO> insert(@Valid @RequestBody User u) {
 		
-		
+		var hashedPassword = encoder.encode(u.getPassword());
+		u.setPassword(hashedPassword);
 		
 		UserDTO dto = service.insert(u);
 		URI uri = ServletUriComponentsBuilder
