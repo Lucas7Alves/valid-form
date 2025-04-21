@@ -24,30 +24,23 @@ import jakarta.validation.Valid;
 public class UserController {
 	
 
-	//TODO: sistema de login
+	//TODO: método de login
 	//TODO: enviar email de confirmação para usuário
-	//TODO: criptografar a senha
 	//TODO: tratamento de exceções personalizado e tratado pelo spring
 
 	@Autowired
 	private UserService service;
 	
-	@Autowired
-	private BCryptPasswordEncoder encoder; 
-	
 	
 	@PostMapping(value = "/cadastro")
 	public ResponseEntity<UserDTO> insert(@Valid @RequestBody User u) {
-		
-		var hashedPassword = encoder.encode(u.getPassword());
-		u.setPassword(hashedPassword);
-		
-		UserDTO dto = service.insert(u);
-		URI uri = ServletUriComponentsBuilder
-				.fromCurrentRequest()
-				.path("/{id}")
-				.buildAndExpand(dto.getId()).toUri();
-		
-		return ResponseEntity.created(uri).body(dto);
+	    UserDTO dto = service.insert(u);
+
+	    URI uri = ServletUriComponentsBuilder
+	            .fromCurrentRequest()
+	            .path("/{id}")
+	            .buildAndExpand(dto.getId()).toUri();
+
+	    return ResponseEntity.created(uri).body(dto);
 	}
 }
