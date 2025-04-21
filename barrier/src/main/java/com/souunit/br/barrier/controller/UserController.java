@@ -4,16 +4,17 @@ import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.souunit.br.barrier.DTO.LoginDTO;
 import com.souunit.br.barrier.DTO.UserDTO;
-import com.souunit.br.barrier.config.SecurityConfiguration;
 import com.souunit.br.barrier.model.User;
+import com.souunit.br.barrier.security.JwtUtil;
 import com.souunit.br.barrier.service.UserService;
 
 import jakarta.validation.Valid;
@@ -23,17 +24,21 @@ import jakarta.validation.Valid;
 @RequestMapping(value = "/user")
 public class UserController {
 	
-
-	//TODO: método de login
-	//TODO: enviar email de confirmação para usuário
-	//TODO: tratamento de exceções personalizado e tratado pelo spring
+	//TODO: segundo método de login
+	//TODO: enviar email de confirmação para usuário (opcional)
 
 	@Autowired
 	private UserService service;
 	
+    @Autowired
+    private JwtUtil jwtUtil;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 	
 	@PostMapping(value = "/cadastro")
 	public ResponseEntity<UserDTO> insert(@Valid @RequestBody User u) {
+
 	    UserDTO dto = service.insert(u);
 
 	    URI uri = ServletUriComponentsBuilder
@@ -43,4 +48,18 @@ public class UserController {
 
 	    return ResponseEntity.created(uri).body(dto);
 	}
+
+	@PostMapping("/auth")
+    public ResponseEntity<?> login(@RequestBody @Valid LoginDTO dto) {
+        User user = service.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(401).body("Invalid password");
+        }
+
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        return ResponseEntity.ok().body("Bearer " + token);
+    }
 }

@@ -22,14 +22,14 @@ public class ControllerExceptionHandler {
 	
 	@ExceptionHandler(EmailAlreadyExistsException.class)
 	public ResponseEntity<CustomError> emailAlreadyExists(EmailAlreadyExistsException e, HttpServletRequest request) {
-		HttpStatus status = HttpStatus.NOT_FOUND;
+		HttpStatus status = HttpStatus.BAD_REQUEST;
 		CustomError err = new CustomError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
 	
 	@ExceptionHandler(InvalidPasswordException.class)
 	public ResponseEntity<CustomError> invalidPassword(InvalidPasswordException e, HttpServletRequest request) {
-		HttpStatus status = HttpStatus.NOT_FOUND;
+		HttpStatus status = HttpStatus.BAD_REQUEST;
 		CustomError err = new CustomError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}

@@ -1,5 +1,7 @@
 package com.souunit.br.barrier.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.souunit.br.barrier.DTO.UserDTO;
 import com.souunit.br.barrier.model.User;
 import com.souunit.br.barrier.repositories.UserRepository;
+import com.souunit.br.barrier.service.exception.EmailAlreadyExistsException;
 import com.souunit.br.barrier.service.exception.InvalidPasswordException;
 import com.souunit.br.barrier.service.exception.UserValidationException;
 import com.souunit.br.barrier.validation.EmailValidator;
@@ -36,6 +39,12 @@ public class UserService {
 			throw new UserValidationException("Name required: 3 character or bigger.");
 		}
 		
+		Optional<User> existingUser = repository.findByEmail(u.getEmail());
+
+        if (existingUser.isPresent()) {
+            throw new EmailAlreadyExistsException("E-mail já está cadastrado.");
+        }
+		
 		u.setPassword(encoder.encode(u.getPassword()));
 		UserDTO dto = copyUserToDTO(repository.save(u));
 		return dto;
@@ -43,6 +52,10 @@ public class UserService {
 		
 	}
 	
+	public Optional<User> findByEmail(String email) {
+		Optional<User> u = repository.findByEmail(email);
+		return u;
+	}
 	private UserDTO copyUserToDTO(User u) {
 		UserDTO dto = new UserDTO();
 		dto.setId(u.getIdUser());
