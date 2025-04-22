@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.souunit.br.barrier.DTO.LoginDTO;
+import com.souunit.br.barrier.DTO.UserAuthDTO;
 import com.souunit.br.barrier.DTO.UserDTO;
 import com.souunit.br.barrier.model.User;
 import com.souunit.br.barrier.security.JwtUtil;
@@ -59,7 +60,19 @@ public class UserController {
         }
 
         String token = jwtUtil.generateToken(user.getEmail());
+        UserDTO userDto = convertToDto(user);
+        
+        UserAuthDTO response = new UserAuthDTO("Bearer " + token, userDto);
 
-        return ResponseEntity.ok().body("Bearer " + token);
+        return ResponseEntity.ok().body(response);
     }
+	
+	
+	private UserDTO convertToDto(User user) {
+	    UserDTO dto = new UserDTO();
+	    dto.setId(user.getIdUser());
+	    dto.setEmail(user.getEmail());
+	    dto.setName(user.getName());
+	    return dto;
+	}
 }
