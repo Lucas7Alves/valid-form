@@ -48,9 +48,15 @@ async function enviarDados(event) {
     });
 
     const result = await response.json();
-    console.log("Resposta: ", result);
-    document.getElementById("getData").innerHTML =
-      "Message: " + JSON.stringify(result);
+
+    if (response.ok) {
+      alert("Cadastro realizado com sucesso! Redirecionando para login...");
+      setTimeout(() => {
+        window.location.href = "../front/pages/login.html";
+      }, 2000);
+    } else {
+      alert(result.message || "Erro ao cadastrar usuário");
+    }
   } catch (error) {
     console.log(error);
   }
