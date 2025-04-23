@@ -1,17 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
+
 <head>
   <meta charset="UTF-8" />
-  <title>Verificação</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verificação de Segurança</title>
 </head>
+
 <body>
-  <h2>Digite o token temporário recebido</h2>
+  <h1>Segunda Etapa de Verificação</h1>
+
   <form id="verify-form">
-    <label for="token">Token:</label>
-    <input type="text" id="token" required />
+    <div>
+      <label for="question">Pergunta de Segurança:</label>
+      <p id="question"></p>
+    </div>
+    <div>
+      <label for="answer">Resposta:</label>
+      <input type="text" id="answer" required />
+    </div>
     <button type="submit">Verificar</button>
   </form>
 
-  <script src="../js/verify.js"></script>
+  <script>
+    const form = document.getElementById("verify-form");
+    const questionText = document.getElementById("question");
+    const email = localStorage.getItem("pendingEmail");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const answer = document.getElementById("answer").value;
+
+      try {
+        const response = await fetch("http://localhost:8080/user/auth/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, answer })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem("token", data.token);
+          localStorage.removeItem("pendingEmail");
+          localStorage.removeItem("securityQuestion");
+          window.location.href = "home.html";
+        } else {
+          alert(data.message || "Resposta incorreta");
+        }
+      } catch (error) {
+        alert("Erro: " + error.message);
+      }
+    });
+
+    // Mostra a pergunta de segurança assim que a página carregar
+    window.onload = () => {
+      const question = localStorage.getItem("securityQuestion");
+      questionText.textContent = question || "Pergunta não encontrada.";
+    };
+  </script>
 </body>
+
 </html>

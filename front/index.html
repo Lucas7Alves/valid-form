@@ -4,18 +4,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-
+  <title>Cadastro de Usuário</title>
 </head>
 
 <body>
   <form id="formulario">
     <fieldset>
       <legend>Informações do usuário</legend>
+
       <div>
         <label for="name">Nome</label>
         <input type="text" name="name" id="name" placeholder="Min 3 caract. Max 15 caract.">
       </div>
+
       <div>
         <label for="email">Email</label>
         <input type="email" name="email" id="email" placeholder="Digite um email válido">
@@ -25,6 +26,17 @@
         <label for="password">Senha</label>
         <input type="password" name="password" id="password" placeholder="Digite uma senha">
       </div>
+
+      <div>
+        <label for="securityQuestion">Pergunta de segurança</label>
+        <input type="text" name="securityQuestion" id="securityQuestion" placeholder="Ex: Cor favorita?">
+      </div>
+
+      <div>
+        <label for="securityAnswer">Resposta de segurança</label>
+        <input type="text" name="securityAnswer" id="securityAnswer" placeholder="Ex: Azul">
+      </div>
+
       <button type="submit" id="sendData">Cadastrar dados</button>
     </fieldset>
   </form>

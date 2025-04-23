@@ -24,13 +24,11 @@ form.addEventListener("submit", async (e) => {
     }
 
     const data = await response.json();
-    if (response.ok) {
-      localStorage.setItem("token", data.token);
-      window.location.href = "verify.html";
-    } else {
-      alert(data.message || "Erro ao fazer login");
-    }
+    localStorage.setItem("securityQuestion", data.securityQuestion);
+    localStorage.setItem("pendingEmail", data.email);
+    window.location.href = "verify.html";
   } catch (err) {
     alert("Erro ao efetuar login: " + err.message);
   }
 });
+

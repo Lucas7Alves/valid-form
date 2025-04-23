@@ -46,6 +46,7 @@ public class UserService {
         }
 		
 		u.setPassword(encoder.encode(u.getPassword()));
+		u.setSecurityAnswer(encoder.encode(u.getSecurityAnswer()));
 		UserDTO dto = copyUserToDTO(repository.save(u));
 		return dto;
 		

@@ -25,6 +25,9 @@ public class User {
 	@Size(min = 8, message = "The password should be bigger or equals than 8 characters")
 	private String password;
 	
+	private String securityQuestion;
+	private String securityAnswer;
+	
 	
 	public User(){
 	}
@@ -67,5 +70,21 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public String getSecurityQuestion() {
+	    return securityQuestion;
+	}
+
+	public void setSecurityQuestion(String securityQuestion) {
+	    this.securityQuestion = securityQuestion;
+	}
+
+	public String getSecurityAnswer() {
+	    return securityAnswer;
+	}
+
+	public void setSecurityAnswer(String securityAnswer) {
+	    this.securityAnswer = securityAnswer;
 	}
 }

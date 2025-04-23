@@ -1,6 +1,8 @@
 package com.souunit.br.barrier.controller;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -56,25 +58,40 @@ public class UserController {
 	}
 
 	@PostMapping("/auth")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginDTO dto) {
-        User user = service.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+	public ResponseEntity<?> login(@RequestBody @Valid LoginDTO dto) {
+	    User user = service.findByEmail(dto.getEmail())
+	        .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(401).body("Invalid password");
-        }
+	    if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+	        return ResponseEntity.status(401).body("Invalid password");
+	    }
 
-        String token = jwtUtil.generateToken(user.getEmail());
-        UserDTO userDto = convertToDto(user);
-        
-        UserAuthDTO response = new UserAuthDTO("Bearer " + token, userDto);
-        
-        String oneTimeToken = tempTokenService.generateToken(user.getEmail());
-        System.out.println("Token temporário: " + oneTimeToken);
+	    // Envia a pergunta de segurança, mas ainda sem gerar o token final
+	    Map<String, String> response = new HashMap<>();
+	    response.put("securityQuestion", user.getSecurityQuestion());
+	    response.put("email", user.getEmail());
+	    return ResponseEntity.ok(response);
+	}
 
+	
+	@PostMapping("/auth/verify")
+	public ResponseEntity<?> verifyAnswer(@RequestBody Map<String, String> payload) {
+	    String email = payload.get("email");
+	    String answer = payload.get("answer");
 
-        return ResponseEntity.ok().body(response);
-    }
+	    User user = service.findByEmail(email)
+	        .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    if (!passwordEncoder.matches(answer, user.getSecurityAnswer())) {
+	        return ResponseEntity.status(401).body("Resposta incorreta");
+	    }
+
+	    String token = jwtUtil.generateToken(user.getEmail());
+	    UserDTO userDto = convertToDto(user);
+	    UserAuthDTO response = new UserAuthDTO("Bearer " + token, userDto);
+	    
+	    return ResponseEntity.ok().body(response);
+	}
 	
 	
 	private UserDTO convertToDto(User user) {
