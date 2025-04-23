@@ -26,7 +26,7 @@ form.addEventListener("submit", async (e) => {
     const data = await response.json();
     if (response.ok) {
       localStorage.setItem("token", data.token);
-      window.location.href = "home.html";
+      window.location.href = "verify.html";
     } else {
       alert(data.message || "Erro ao fazer login");
     }

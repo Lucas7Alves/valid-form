@@ -16,6 +16,7 @@ import com.souunit.br.barrier.DTO.UserAuthDTO;
 import com.souunit.br.barrier.DTO.UserDTO;
 import com.souunit.br.barrier.model.User;
 import com.souunit.br.barrier.security.JwtUtil;
+import com.souunit.br.barrier.service.TempTokenService;
 import com.souunit.br.barrier.service.UserService;
 
 import jakarta.validation.Valid;
@@ -36,10 +37,14 @@ public class UserController {
     
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private TempTokenService tempTokenService;
 	
 	@PostMapping(value = "/cadastro")
 	public ResponseEntity<UserDTO> insert(@Valid @RequestBody User u) {
-
+		
+		u.setEmail(u.getEmail().toLowerCase());
 	    UserDTO dto = service.insert(u);
 
 	    URI uri = ServletUriComponentsBuilder
@@ -63,6 +68,10 @@ public class UserController {
         UserDTO userDto = convertToDto(user);
         
         UserAuthDTO response = new UserAuthDTO("Bearer " + token, userDto);
+        
+        String oneTimeToken = tempTokenService.generateToken(user.getEmail());
+        System.out.println("Token temporário: " + oneTimeToken);
+
 
         return ResponseEntity.ok().body(response);
     }

@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/auth", "/user/cadastro","/h2-console/**").permitAll() // públicas
+                		  .requestMatchers("/user/auth", "/user/cadastro", "/verify", "/h2-console/**").permitAll() // públicas
                         .anyRequest().authenticated() // demais, protegidas
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
